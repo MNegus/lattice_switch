@@ -1,0 +1,1 @@
+Repo for work done on a URSS project at the University of Warwick during the summer of 2017. The aim was to implement a Monte-Carlo lattice switch technique, but using molecular dynamics rather than Monte-Carlo for the dynamics of particles in between switching.
