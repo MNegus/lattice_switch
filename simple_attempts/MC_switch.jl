@@ -1,4 +1,4 @@
-# MC_switch. First module for Monte-Carlo switching using Molecular Dynamics
+  # MC_switch. First module for Monte-Carlo switching using Molecular Dynamics
 module MC_switch
 
 import Potentials
@@ -11,7 +11,7 @@ function __init__()
 
   # Numerical parameters
   global δt = 0.01 # Timestep length
-  global notimesteps = 1000000 # Number of timesteps to run for
+  global notimesteps = 10000000 # Number of timesteps to run for
   global switch_regularity = 10 # Number of timesteps between each switch attempt
   global x_min = -4
   global x_max = 4.4
@@ -52,18 +52,10 @@ function simulate(potential_name)
   R = randn()
   R_next = randn()
 
-  # x = 2.9272649686148524
-  # println(DU(x))
-  # x = x - (δt * DU(x)) / M + sqrt((0.5 * kT * δt) / M) * (R + R_next)
-  # println(x)
-
-
   for m = 1:notimesteps
     if isnan(x)
-      return("You're fuggered now")
+      return string("Infinite value of x reached at timestep", x)
     end
-    # println(string("x = ", string(x)))
-    # println(string("cur_well = ", string(cur_well)))
 
     if m % switch_regularity == 0
       switch_attempts += 1
@@ -72,13 +64,10 @@ function simulate(potential_name)
       if (cur_well == 1 && x > 0) || (cur_well == 2 && x < 0)
         cur_well, oth_well = oth_well, cur_well
       end
-      
+
       dis = well_dis(cur_well, x) # Displacement from the current well
       ΔU = U_shifted(real_pos(oth_well, dis)) - U_shifted(x) # Energy change in making the switch
-      # println(" ")
-      # println(ΔU)
-      # println(exp(-ΔU))
-      # println(" ")
+
       if rand() <= min(1, exp(-ΔU))
         cur_well, oth_well = oth_well, cur_well
         x = real_pos(cur_well, dis)
@@ -90,7 +79,6 @@ function simulate(potential_name)
 
       P_left = noleft / switch_attempts
       P_right = (switch_attempts - noleft) / switch_attempts
-      # println([P_left, P_right])
       push!(ΔF, -kT * log(P_left / P_right) + U_shift)
     end
 
@@ -105,8 +93,8 @@ function simulate(potential_name)
       ΔF[j] = 0
     end
   end
-  plt = Plots.plot([1:switch_attempts;], ΔF)
-  Plots.display(plt)
+  # plt = Plots.plot([1:switch_attempts;], ΔF)
+  # Plots.display(plt)
   println(last(ΔF))
 end
 
@@ -114,9 +102,9 @@ function exact_sol(potential_name)
   potential_arr = Potentials.potential_selector(potential_name)
   U = potential_arr[3]
   integrand(x) = exp(- U(x) / kT)
-  P_left = quadgk(integrand, -1000, 0)
-  P_right = quadgk(integrand, 0, 1000)
-  println([P_left, P_right])
+  P_left = quadgk(integrand, -1100, 0)
+  P_right = quadgk(integrand, 0, 1100)
+  println((P_left[1], P_right[1]))
   println(-kT * log(P_left[1] / P_right[1]))
 end
 
