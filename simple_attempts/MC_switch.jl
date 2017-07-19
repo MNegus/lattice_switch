@@ -1,8 +1,9 @@
-  # MC_switch. First module for Monte-Carlo switching using Molecular Dynamics
+# MC_switch. First module for Monte-Carlo switching using Molecular Dynamics
 module MC_switch
 
 import Potentials
 import Plots
+import QuadGK
 
 function __init__()
   # Physical parameters
@@ -10,7 +11,7 @@ function __init__()
   global kT = 1 # Boltzmann constant * Temperature
 
   # Numerical parameters
-  global δt = 0.01 # Timestep length
+  global δt = 0.001 # Timestep length
   global notimesteps = 10000000 # Number of timesteps to run for
   global switch_regularity = 10 # Number of timesteps between each switch attempt
   global x_min = -4
@@ -102,8 +103,8 @@ function exact_sol(potential_name)
   potential_arr = Potentials.potential_selector(potential_name)
   U = potential_arr[3]
   integrand(x) = exp(- U(x) / kT)
-  P_left = quadgk(integrand, -1100, 0)
-  P_right = quadgk(integrand, 0, 1100)
+  P_left = QuadGK.quadgk(integrand, -1100, 0)
+  P_right = QuadGK.quadgk(integrand, 0, 1100)
   println((P_left[1], P_right[1]))
   println(-kT * log(P_left[1] / P_right[1]))
 end
