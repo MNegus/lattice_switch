@@ -1,5 +1,7 @@
 module Potentials
 
+using Plots
+
 
 # Function which returns the relevant functions for a given named potential
 function potential_selector(potential_name)
@@ -14,6 +16,18 @@ function potential_selector(potential_name)
   end
 end
 
+function plot_potential(potential_name, x_min, x_max, n=1000)
+  x = linspace(x_min, x_max, n)
+  if potential_name == "KT_NOTES"
+    pot_func = KT_NOTES_U
+  elseif potential_name == "QUARTIC"
+    pot_func = QUARTIC_U
+  elseif potential_name == "WIDE"
+    pot_func = WIDE_U
+  end
+  plt = plot(x, [pot_func(p) for p in x])
+  savefig(string(potential_name, ".png"))
+end
 
 #=
  Potential function that appeared in the kinetic theory notes
@@ -78,6 +92,22 @@ end
 function QUARTIC_DU(x)
   x_0 = -0.126000192586256
   return 4 * (x + x_0)^3 - 8 * (x + x_0) - 1
+end
+
+#=
+W I D E  B O I
+=#
+# Potential function
+function WIDE_U(x)
+  if x <= -1
+    return 5 * (x + 2)^2
+  elseif x <= 0
+    return 10 - 5 * x^2
+  elseif x <= 0.3461
+    return -50 * x^2 + 10
+  else
+    return 50 * (x - sqrt(0.48)) - 2
+  end
 end
 
 end
