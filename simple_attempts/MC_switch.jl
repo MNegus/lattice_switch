@@ -11,11 +11,11 @@ function __init__()
   global kT = 1 # Boltzmann constant * Temperature
 
   # Numerical parameters
-  global δt = 0.001 # Timestep length
-  global notimesteps = 10000000 # Number of timesteps to run for
+  global δt = 0.01 # Timestep length
+  global notimesteps = 100000 # Number of timesteps to run for
   global switch_regularity = 10 # Number of timesteps between each switch attempt
   global x_min = -4
-  global x_max = 4.4
+  global x_max = 1.5
   global start_well = 1 # Which well to start in, 1 is left, 2 is right
 end
 
@@ -49,6 +49,7 @@ function simulate(potential_name)
     oth_well = 1
   end
 
+  NO_SHIFTS = 0
 
   R = randn()
   R_next = randn()
@@ -68,8 +69,16 @@ function simulate(potential_name)
 
       dis = well_dis(cur_well, x) # Displacement from the current well
       ΔU = U_shifted(real_pos(oth_well, dis)) - U_shifted(x) # Energy change in making the switch
-
+      # println(" ")
+      # println(string("m = ", m))
+      # println(string("cur_well = ", cur_well))
+      # println(string("dis = ", dis))
+      # println(string("x = ", x))
+      # println(string("ΔU = ", ΔU))
+      # println(string("exp(-ΔU) = ", exp(-ΔU)))
+      # println(" ")
       if rand() <= min(1, exp(-ΔU))
+        NO_SHIFTS += 1
         cur_well, oth_well = oth_well, cur_well
         x = real_pos(cur_well, dis)
       end
@@ -90,13 +99,14 @@ function simulate(potential_name)
   end
   # Clean up ΔF
   for j = [1:length(ΔF);]
-    if ΔF[j] == Inf
+    if isinf(ΔF[j])
       ΔF[j] = 0
     end
   end
-  # plt = Plots.plot([1:switch_attempts;], ΔF)
-  # Plots.display(plt)
-  println(last(ΔF))
+
+  plt = Plots.plot([1:switch_attempts;], ΔF)
+  Plots.savefig(string(potential_name, "_ΔF.png"))
+  return last(ΔF)
 end
 
 function exact_sol(potential_name)
@@ -104,9 +114,9 @@ function exact_sol(potential_name)
   U = potential_arr[3]
   integrand(x) = exp(- U(x) / kT)
   P_left = QuadGK.quadgk(integrand, -1100, 0)
-  P_right = QuadGK.quadgk(integrand, 0, 1100)
+  P_right = QuadGK.quadgk(integrand, 0, 700)
   println((P_left[1], P_right[1]))
-  println(-kT * log(P_left[1] / P_right[1]))
+return -kT * log(P_left[1] / P_right[1])
 end
 
 end

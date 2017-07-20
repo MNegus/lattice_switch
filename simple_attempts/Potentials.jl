@@ -13,20 +13,40 @@ function potential_selector(potential_name)
     minima = [-1.220997215942, 1.5989977937]
     U_shift = 2.8256360858458973
     return (minima, U_shift, QUARTIC_U, QUARTIC_U_shifted, QUARTIC_DU)
+  elseif potential_name == "DIFF_WIDTH"
+    minima = [-2, sqrt(0.48)]
+    U_shift = 2
+    return (minima, U_shift, DIFF_WIDTH_U, DIFF_WIDTH_U_shifted, DIFF_WIDTH_DU)
   end
 end
 
-function plot_potential(potential_name, x_min, x_max, n=1000)
+function plot_potential(potential_name, x_min, x_max; shifted=false, n=1000)
   x = linspace(x_min, x_max, n)
   if potential_name == "KT_NOTES"
-    pot_func = KT_NOTES_U
+    if shifted
+      pot_func = KT_NOTES_U_shifted
+    else
+      pot_func = KT_NOTES_U
+    end
   elseif potential_name == "QUARTIC"
-    pot_func = QUARTIC_U
-  elseif potential_name == "WIDE"
-    pot_func = WIDE_U
+    if shifted
+      pot_func = QUARTIC_U_shifted
+    else
+      pot_func = QUARTIC_U
+    end
+  elseif potential_name == "DIFF_WIDTH"
+    if shifted
+      pot_func = DIFF_WIDTH_U_shifted
+    else
+      pot_func = DIFF_WIDTH_U
+    end
   end
   plt = plot(x, [pot_func(p) for p in x])
-  savefig(string(potential_name, ".png"))
+  if shifted
+    savefig(string(potential_name, "_shifted.png"))
+  else
+    savefig(string(potential_name, ".png"))
+  end
 end
 
 #=
@@ -98,7 +118,7 @@ end
 W I D E  B O I
 =#
 # Potential function
-function WIDE_U(x)
+function DIFF_WIDTH_U(x)
   if x <= -1
     return 5 * (x + 2)^2
   elseif x <= 0
@@ -106,7 +126,33 @@ function WIDE_U(x)
   elseif x <= 0.3461
     return -50 * x^2 + 10
   else
-    return 50 * (x - sqrt(0.48)) - 2
+    return 50 * (x - sqrt(0.48))^2 - 2
+  end
+end
+
+# Potential function shifted
+function DIFF_WIDTH_U_shifted(x)
+  if x <= -1
+    return 5 * (x + 2)^2
+  elseif x <= 0
+    return 10 - 5 * x^2
+  elseif x <= 0.3461
+    return -50 * x^2 + 12
+  else
+    return 50 * (x - sqrt(0.48))^2
+  end
+end
+
+# Derivative of potential function
+function DIFF_WIDTH_DU(x)
+  if x <= -1
+    return 10 * (x + 2)
+  elseif x <= 0
+    return -10 * x
+  elseif x <= 0.3461
+    return -100 * x
+  else
+    return 100 * (x - sqrt(0.48))
   end
 end
 
