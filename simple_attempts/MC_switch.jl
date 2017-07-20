@@ -11,8 +11,8 @@ function __init__()
   global kT = 1 # Boltzmann constant * Temperature
 
   # Numerical parameters
-  global δt = 0.01 # Timestep length
-  global notimesteps = 100000 # Number of timesteps to run for
+  global δt = 0.0005 # Timestep length
+  global notimesteps = 100000000 # Number of timesteps to run for
   global switch_regularity = 10 # Number of timesteps between each switch attempt
   global x_min = -4
   global x_max = 1.5
@@ -104,6 +104,7 @@ function simulate(potential_name)
     end
   end
 
+  writedlm(string(potential_name, "_data.csv"), ΔF, "\t")
   plt = Plots.plot([1:switch_attempts;], ΔF)
   Plots.savefig(string(potential_name, "_ΔF.png"))
   return last(ΔF)
