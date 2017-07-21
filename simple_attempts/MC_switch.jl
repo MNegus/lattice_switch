@@ -4,16 +4,14 @@ module MC_switch
 import Potentials
 import Plots
 import QuadGK
+Plots.pyplot()
 
 function __init__()
   # Physical parameters
   global M = 1 # Mass of particles
-  global kT = 1 # Boltzmann constant * Temperature
+  global kT = 0.5 # Boltzmann constant * Temperature
 
   # Numerical parameters
-  global δt = 0.0005 # Timestep length
-  global notimesteps = 100000000 # Number of timesteps to run for
-  global switch_regularity = 10 # Number of timesteps between each switch attempt
   global x_min = -4
   global x_max = 1.5
   global start_well = 1 # Which well to start in, 1 is left, 2 is right
@@ -25,7 +23,7 @@ function plot()
   Plots.plot(x, y)
 end
 
-function simulate(potential_name)
+function simulate(potential_name, notimesteps, δt; switch_regularity=10)
   potential_arr = Potentials.potential_selector(potential_name)
   minima = potential_arr[1]
   U_shift = potential_arr[2]
@@ -105,8 +103,8 @@ function simulate(potential_name)
   end
 
   writedlm(string(potential_name, "_data.csv"), ΔF, "\t")
-  plt = Plots.plot([1:switch_attempts;], ΔF)
-  Plots.savefig(string(potential_name, "_ΔF.png"))
+  # plt = Plots.plot([1:switch_attempts;], ΔF)
+  # Plots.savefig(string(potential_name, "_ΔF.png"))
   return last(ΔF)
 end
 
@@ -115,7 +113,7 @@ function exact_sol(potential_name)
   U = potential_arr[3]
   integrand(x) = exp(- U(x) / kT)
   P_left = QuadGK.quadgk(integrand, -1100, 0)
-  P_right = QuadGK.quadgk(integrand, 0, 700)
+  P_right = QuadGK.quadgk(integrand, 0, 1000)
   println((P_left[1], P_right[1]))
 return -kT * log(P_left[1] / P_right[1])
 end

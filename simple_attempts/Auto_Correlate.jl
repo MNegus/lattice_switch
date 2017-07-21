@@ -10,14 +10,14 @@ function trim_data(filename, remove_portion)
 end
 
 # Perform auto-correlation to produce an array of uncorrelated data
-function autocorrelate(data_array, R_cutoff)
+function autocorrelate(data_array, R_cutoff; interval_length=1)
   mean_data = mean(data_array)
   N = length(data_array)
   denomimator = sum([(value - mean_data)^2 for value in data_array])
 
   period = 0
 
-  for k = [1:10000:N;]
+  for k = [1:interval_length:N;]
     println(k)
     R = sum([(data_array[j] - mean_data) * (data_array[j + k] - mean_data) for j = [1:N - k;]]) / denomimator
     println(R)
@@ -31,9 +31,9 @@ function autocorrelate(data_array, R_cutoff)
   return data_array[1:period:end]
 end
 
-function calculate(filename, remove_portion, R_cutoff)
+function calculate(filename, remove_portion, R_cutoff; interval_length=1)
   data_arr = trim_data(filename, remove_portion)
-  uncorr_data = autocorrelate(data_arr, R_cutoff)
+  uncorr_data = autocorrelate(data_arr, R_cutoff, interval_length=interval_length)
   return [mean(uncorr_data), sqrt(var(uncorr_data) / length(uncorr_data))]
 end
 
