@@ -45,7 +45,6 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
     for kT = [min_temp:tempinc:max_temp;]
         exact_val = MC_switch.exact_sol(potential_name, kT)
         for δt = [min_time:timeinc:max_time;]
-            println([kT, δt])
             if (CATCHUP) && (δt < start_time)
                 continue
             end

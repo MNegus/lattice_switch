@@ -112,7 +112,6 @@ function exact_sol(potential_name, kT)
   int_func(x) = exp(- potential_arr[3](x) / kT)
   P_left = Cuba.vegas((t, f) -> f[1] = int_func(-t[1] / (1 - t[1])) / ((1 - t[1])^2), reltol=10.0^(-7))
   P_right = Cuba.vegas((t, f) -> f[1] = int_func(t[1] / (1 - t[1])) / ((1 - t[1])^2), reltol=10.0^(-7))
-  println((P_left[1], P_right[1]))
 return -kT * log(P_left[1][1] / P_right[1][1])
 end
 
