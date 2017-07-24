@@ -8,7 +8,7 @@ import MC_switch
 import Auto_Correlate
 
 # Runs simulations and stores result in a CSV
-function simulate(potential_name, timerange, timeinc, temprange, tempinc, maxtimesteps)
+function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempinc, maxtimesteps)
     min_time = timerange[1]
     max_time = timerange[2]
     max_temp = temprange[2]
@@ -17,7 +17,6 @@ function simulate(potential_name, timerange, timeinc, temprange, tempinc, maxtim
     start_time = min_time # Only relevant when starting from an existiing file MAKE THIS MORE ELEGANT
     CATCHUP = false
 
-    data_dir = "/home/michael/Documents/URSS 2017/Julia files/lattice_switch/analysis" # Directory data stored in
     filename = string(potential_name, "_data.csv")
     fullfilename = joinpath(data_dir, filename)
     if isfile(fullfilename)
