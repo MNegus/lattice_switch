@@ -50,7 +50,6 @@ function simulate(potential_name, maxtimesteps, δt, kT, filename; switch_regula
 
   R = randn()
   R_next = randn()
-
   
   for timestep = 1:maxtimesteps
     if cur_well == 1
@@ -62,7 +61,6 @@ function simulate(potential_name, maxtimesteps, δt, kT, filename; switch_regula
     x = x - (δt * DU(x)) / M + sqrt((0.5 * kT * δt) / M) * (R + R_next)
     R = R_next
     R_next = randn()
-
     if isnan(x)
       return string("Infinite value of x reached at timestep ", timestep)
     end
@@ -109,7 +107,7 @@ function simulate(potential_name, maxtimesteps, δt, kT, filename; switch_regula
   return last(ΔF)
 end
 
-function exact_sol(potential_name)
+function exact_sol(potential_name, kT)
   potential_arr = Potentials.potential_selector(potential_name)
   int_func(x) = exp(- potential_arr[3](x) / kT)
   P_left = Cuba.vegas((t, f) -> f[1] = int_func(-t[1] / (1 - t[1])) / ((1 - t[1])^2), reltol=10.0^(-7))

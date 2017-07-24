@@ -18,12 +18,12 @@ function autocorrelate(data_array, R_cutoff; interval_length=1)
   period = 0
 
   for k = [1:interval_length:N;]
-    println(k)
+    # println(k)
     R = sum([(data_array[j] - mean_data) * (data_array[j + k] - mean_data) for j = [1:N - k;]]) / denomimator
-    println(R)
+    # println(R)
     if abs(R) <= R_cutoff
       period = k
-      println(period)
+      # println(period)
       break
     end
   end
@@ -34,7 +34,7 @@ end
 function calculate(filename, remove_portion, R_cutoff; interval_length=1)
   data_arr = trim_data(filename, remove_portion)
   uncorr_data = autocorrelate(data_arr, R_cutoff, interval_length=interval_length)
-  return (mean(uncorr_data), sqrt(var(uncorr_data) / length(uncorr_data)))
+  return [mean(uncorr_data), sqrt(var(uncorr_data) / length(uncorr_data))]
 end
 
 end

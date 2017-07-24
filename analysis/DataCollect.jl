@@ -15,12 +15,13 @@ function simulate(potential_name, timerange, timeinc, temprange, tempinc, maxtim
 
 
     start_time = min_time # Only relevant when starting from an existiing file MAKE THIS MORE ELEGANT
+    CATCHUP = false
 
-    data_dir = "/home/michael/Documents/lattice_switch/analysis/" # Directory data stored in
+    data_dir = "/home/michael/Documents/URSS 2017/Julia files/lattice_switch/analysis" # Directory data stored in
     filename = string(potential_name, "_data.csv")
     fullfilename = joinpath(data_dir, filename)
     if isfile(fullfilename)
-        endline = readdlm(fullfilename, ',')[end, :]
+        endline = readdlm(fullfilename, '\t')[end, :]
         start_time = endline[2] + timeinc
         if start_time > timerange[2]
             min_temp = endline[1] + tempinc
@@ -43,8 +44,9 @@ function simulate(potential_name, timerange, timeinc, temprange, tempinc, maxtim
 
     outputfilename = joinpath(data_dir, string(potential_name, "_output.csv"))
     for kT = [min_temp:tempinc:max_temp;]
-        for δt = [min_time:timeinc:max_time]
-            println(kT, δt)
+        exact_val = MC_switch.exact_sol(potential_name, kT)
+        for δt = [min_time:timeinc:max_time;]
+            println([kT, δt])
             if (CATCHUP) && (δt < start_time)
                 continue
             end
@@ -52,9 +54,11 @@ function simulate(potential_name, timerange, timeinc, temprange, tempinc, maxtim
             output_data = []
             for i = [1:3;]
                 MC_switch.simulate(potential_name, maxtimesteps, δt, kT, outputfilename)
-                println(Auto_Correlate.calculate(outputfilename, 0.5, 0.01, interval_length=interval_length))
+                push!(output_data, Auto_Correlate.calculate(outputfilename, 0.5, 0.01, interval_length=interval_length))
             end
-            print(output_data)
+            meanval = mean(output_data[j][1] for j = 1:3)
+            stderr = sqrt(sum(output_data[j][2]^2 for j = 1:3)) / 3
+            writedlm(result_file, [kT, δt, meanval, stderr, exact_val]')
             if (CATCHUP) && (δt == max_time)
                 CATCHUP = false
             end
