@@ -34,7 +34,7 @@ end
 function calculate(filename, remove_portion, R_cutoff; interval_length=1)
   data_arr = trim_data(filename, remove_portion)
   uncorr_data = autocorrelate(data_arr, R_cutoff, interval_length=interval_length)
-  return [mean(uncorr_data), sqrt(var(uncorr_data) / length(uncorr_data))]
+  return (mean(uncorr_data), sqrt(var(uncorr_data) / length(uncorr_data)))
 end
 
 end
