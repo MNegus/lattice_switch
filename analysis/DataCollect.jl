@@ -64,8 +64,6 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
                 println("No finite values reached")
                 writedlm(result_file, [kT, δt, NaN, NaN, exact_val]')
             else
-                println(length(output_data))
-                println(output_data)
                 meanval = mean(output_data[j][1] for j = 1:length(output_data))
                 stderr = sqrt(sum(output_data[j][2]^2 for j = 1:length(output_data))) / (length(output_data))
                 writedlm(result_file, [kT, δt, meanval, stderr, exact_val]')
