@@ -19,7 +19,7 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
 
     filename = string(potential_name, "_", filetag, "_data.csv")
     fullfilename = joinpath(data_dir, filename)
-    if isfile(fullfilename)
+    if isfile(fullfilename) && (filesize(fullfilename) > 0)
         endline = readdlm(fullfilename, '\t')[end, :]
         start_time = endline[2] + timeinc
         if start_time > timerange[2]
