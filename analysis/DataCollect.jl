@@ -8,7 +8,7 @@ import MC_switch
 import Auto_Correlate
 
 # Runs simulations and stores result in a CSV
-function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempinc, maxtimesteps)
+function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempinc, maxtimesteps; filetag="")
     min_time = timerange[1]
     max_time = timerange[2]
     max_temp = temprange[2]
@@ -17,7 +17,7 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
     start_time = min_time # Only relevant when starting from an existiing file MAKE THIS MORE ELEGANT
     CATCHUP = false
 
-    filename = string(potential_name, "_data.csv")
+    filename = string(potential_name, "_", filetag, "_data.csv")
     fullfilename = joinpath(data_dir, filename)
     if isfile(fullfilename)
         endline = readdlm(fullfilename, '\t')[end, :]
@@ -36,8 +36,6 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
     else
         min_temp = temprange[1]
     end
-
-    result_file = open(fullfilename, "a+")
     
     interval_length = max(1, round(Int64, maxtimesteps / 10000))
 
@@ -51,20 +49,35 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
 
             output_data = []
             for i = [1:3;]
-                MC_switch.simulate(potential_name, maxtimesteps, δt, kT, outputfilename)
+                try
+                    MC_switch.simulate(potential_name, maxtimesteps, δt, kT, outputfilename)
+                catch e
+                    println("Caught error $e")
+                    continue
+                end
                 push!(output_data, Auto_Correlate.calculate(outputfilename, 0.5, 0.01, interval_length=interval_length))
             end
-            meanval = mean(output_data[j][1] for j = 1:3)
-            stderr = sqrt(sum(output_data[j][2]^2 for j = 1:3)) / 3
-            writedlm(result_file, [kT, δt, meanval, stderr, exact_val]')
+
+            result_file = open(fullfilename, "a+")
+
+            if length(output_data) == 0
+                println("No finite values reached")
+                writedlm(result_file, [kT, δt, NaN, NaN, exact_val]')
+            else
+                println(length(output_data))
+                println(output_data)
+                meanval = mean(output_data[j][1] for j = 1:length(output_data))
+                stderr = sqrt(sum(output_data[j][2]^2 for j = 1:length(output_data))) / (length(output_data))
+                writedlm(result_file, [kT, δt, meanval, stderr, exact_val]')
+            end
+
+            close(result_file)
+
             if (CATCHUP) && (δt == max_time)
                 CATCHUP = false
             end
         end
     end
-
-    close(result_file)
-
 end
 
 

@@ -62,7 +62,8 @@ function simulate(potential_name, maxtimesteps, δt, kT, filename; switch_regula
     R = R_next
     R_next = randn()
     if isnan(x)
-      return string("Infinite value of x reached at timestep ", timestep)
+      println(string("Infinite value of x reached at timestep ", timestep))   
+      throw(DomainError())
     end
 
     # Recalibrate the wells, if a particle has managed to cross over the barrier
