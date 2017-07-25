@@ -8,6 +8,6 @@ do
 		echo "#PBS -l nodes=1:ppn=1,mem=256mb,walltime=08:00:00">>$filename
 		echo "#PBS -V">>$filename
 		echo "cd /storage/molsim/phuhzr/lattice_switch/jobs">>$filename
-		echo "julia run_"$pot"_"$i".jl">>$filename
+		echo "julia run_"$p"_"$i".jl">>$filename
 	done
 done
