@@ -39,7 +39,7 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
     
     interval_length = max(1, round(Int64, maxtimesteps / 10000))
 
-    outputfilename = joinpath(data_dir, string(potential_name, "_output.csv"))
+    outputfilename = joinpath(data_dir, string(potential_name, "_", filetag, "_output.csv"))
     for kT = [min_temp:tempinc:max_temp;]
         exact_val = MC_switch.exact_sol(potential_name, kT)
         for δt = [min_time:timeinc:max_time;]
