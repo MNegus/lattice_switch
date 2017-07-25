@@ -18,7 +18,11 @@ function autocorrelate(data_array, R_cutoff; interval_length=1)
   period = 0
 
   for k = [1:interval_length:N;]
-    R = sum([(data_array[j] - mean_data) * (data_array[j + k] - mean_data) for j = [1:N - k;]]) / denomimator
+    R = 0
+    for j = [1: N - k;]
+      R += (data_array[j] - mean_data) * (data_array[j + k] - mean_data)
+    end
+    R = R / denomimator
     if abs(R) <= R_cutoff
       period = k
       break
