@@ -1,6 +1,6 @@
 module Potentials
 
-using Plots
+# using Plots
 
 
 # Function which returns the relevant functions for a given named potential
@@ -20,34 +20,34 @@ function potential_selector(potential_name)
   end
 end
 
-function plot_potential(potential_name, x_min, x_max; shifted=false, n=1000)
-  x = linspace(x_min, x_max, n)
-  if potential_name == "KT_NOTES"
-    if shifted
-      pot_func = KT_NOTES_U_shifted
-    else
-      pot_func = KT_NOTES_U
-    end
-  elseif potential_name == "QUARTIC"
-    if shifted
-      pot_func = QUARTIC_U_shifted
-    else
-      pot_func = QUARTIC_U
-    end
-  elseif potential_name == "DIFF_WIDTH"
-    if shifted
-      pot_func = DIFF_WIDTH_U_shifted
-    else
-      pot_func = DIFF_WIDTH_U
-    end
-  end
-  plt = plot(x, [pot_func(p) for p in x])
-  if shifted
-    savefig(string(potential_name, "_shifted.png"))
-  else
-    savefig(string(potential_name, ".png"))
-  end
-end
+# function plot_potential(potential_name, x_min, x_max; shifted=false, n=1000)
+#   x = linspace(x_min, x_max, n)
+#   if potential_name == "KT_NOTES"
+#     if shifted
+#       pot_func = KT_NOTES_U_shifted
+#     else
+#       pot_func = KT_NOTES_U
+#     end
+#   elseif potential_name == "QUARTIC"
+#     if shifted
+#       pot_func = QUARTIC_U_shifted
+#     else
+#       pot_func = QUARTIC_U
+#     end
+#   elseif potential_name == "DIFF_WIDTH"
+#     if shifted
+#       pot_func = DIFF_WIDTH_U_shifted
+#     else
+#       pot_func = DIFF_WIDTH_U
+#     end
+#   end
+#   plt = plot(x, [pot_func(p) for p in x])
+#   if shifted
+#     savefig(string(potential_name, "_shifted.png"))
+#   else
+#     savefig(string(potential_name, ".png"))
+#   end
+# end
 
 #=
  Potential function that appeared in the kinetic theory notes

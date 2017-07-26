@@ -2,9 +2,9 @@
 module MC_switch
 
 import Potentials
-import Plots
+# import Plots
 import Cuba
-Plots.pyplot()
+# Plots.pyplot()
 
 function __init__()
   # Physical parameters
@@ -17,11 +17,11 @@ function __init__()
   global start_well = 1 # Which well to start in, 1 is left, 2 is right
 end
 
-function plot()
-  x = linspace(x_min, x_max, 1000)
-  y = [Potentials.U_shifted(p) for p in x]
-  Plots.plot(x, y)
-end
+# function plot()
+#   x = linspace(x_min, x_max, 1000)
+#   y = [Potentials.U_shifted(p) for p in x]
+#   Plots.plot(x, y)
+# end
 
 function simulate(potential_name, maxtimesteps, δt, kT, filename; switch_regularity=10)
   potential_arr = Potentials.potential_selector(potential_name)
