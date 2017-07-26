@@ -5,7 +5,7 @@
 module DataCollect
 
 import MC_switch
-import Auto_Correlate
+import SimpleCalc
 
 # Runs simulations and stores result in a CSV
 function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempinc, maxtimesteps; filetag="")
@@ -36,8 +36,6 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
     else
         min_temp = temprange[1]
     end
-    
-    interval_length = max(1, round(Int64, maxtimesteps / 10000))
 
     outputfilename = joinpath(data_dir, string(potential_name, "_", filetag, "_output.csv"))
     for kT = [min_temp:tempinc:max_temp;]
@@ -55,7 +53,7 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
                     println("Caught error $e")
                     continue
                 end
-                push!(output_data, Auto_Correlate.calculate(outputfilename, 0.5, 0.01, interval_length=interval_length))
+                push!(output_data, SimpleCalc.calculate(outputfilename, 0.9, interval_length=100))
             end
 
             result_file = open(fullfilename, "a+")
