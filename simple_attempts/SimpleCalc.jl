@@ -13,7 +13,6 @@ end
 
 function calculate(filename, remove_portion; interval_length=100)
   data_arr = trim_data(filename, remove_portion)[1:interval_length:end]
-  println(length(data_arr))
   return [mean(data_arr), sqrt(var(data_arr) / length(data_arr))]
 end
 
