@@ -105,7 +105,7 @@ function simulate(potential_name, maxtimesteps, δt, kT, filename; switch_regula
   writedlm(filename, ΔF, "\t")
   # plt = Plots.plot([1:switch_attempts;], ΔF)
   # Plots.savefig(string(potential_name, "_ΔF.png"))
-  return last(ΔF)
+  return ΔF
 end
 
 function exact_sol(potential_name, kT)
