@@ -37,7 +37,6 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
         min_temp = temprange[1]
     end
 
-    outputfilename = joinpath(data_dir, string(potential_name, "_", filetag, "_output.csv"))
     for kT = [min_temp:tempinc:max_temp;]
         exact_val = MC_switch.exact_sol(potential_name, kT)
         for δt = [min_time:timeinc:max_time;]
@@ -48,12 +47,12 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
             output_data = []
             for i = [1:3;]
                 try
-                    MC_switch.simulate(potential_name, maxtimesteps, δt, kT, outputfilename)
+                    output_arr = MC_switch.simulate(potential_name, maxtimesteps, δt, kT)
                 catch e
                     println("Caught error $e")
                     continue
                 end
-                push!(output_data, SimpleCalc.calculate(outputfilename, 0.9, interval_length=100))
+                push!(output_data, SimpleCalc.calculate(output_arr, 0.9, interval_length=100))
             end
 
             result_file = open(fullfilename, "a+")

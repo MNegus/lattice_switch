@@ -23,7 +23,7 @@ end
 #   Plots.plot(x, y)
 # end
 
-function simulate(potential_name, maxtimesteps, δt, kT, filename; switch_regularity=10)
+function simulate(potential_name, maxtimesteps, δt, kT; switch_regularity=10)
   potential_arr = Potentials.potential_selector(potential_name)
   minima = potential_arr[1]
   U_shift = potential_arr[2]
@@ -102,7 +102,7 @@ function simulate(potential_name, maxtimesteps, δt, kT, filename; switch_regula
     end
   end
 
-  writedlm(filename, ΔF, "\t")
+  # writedlm(filename, ΔF, "\t")
   # plt = Plots.plot([1:switch_attempts;], ΔF)
   # Plots.savefig(string(potential_name, "_ΔF.png"))
   return ΔF
