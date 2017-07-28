@@ -5,7 +5,7 @@ module SimpleCalc
 
 # Function to read in the data file and create an array, removing a certain portion
 function trim_data(data_arr, remove_portion)
-  return data_array[trunc(Int, length(data_array) * remove_portion):end]
+  return data_arr[trunc(Int, length(data_arr) * remove_portion):end]
 end
 
 

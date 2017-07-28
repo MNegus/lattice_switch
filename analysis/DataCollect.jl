@@ -46,8 +46,10 @@ function simulate(potential_name, data_dir, timerange, timeinc, temprange, tempi
 
             output_data = []
             for i = [1:3;]
+                output_arr = []
                 try
                     output_arr = MC_switch.simulate(potential_name, maxtimesteps, δt, kT)
+                    println(sizeof(output_arr))
                 catch e
                     println("Caught error $e")
                     continue

@@ -9,7 +9,6 @@ import Cuba
 function __init__()
   # Physical parameters
   global M = 1 # Mass of particles
-  global kT = 0.1 # Boltzmann constant * Temperature
 
   # Numerical parameters
   global x_min = -4
@@ -105,7 +104,7 @@ function simulate(potential_name, maxtimesteps, δt, kT; switch_regularity=10)
   # writedlm(filename, ΔF, "\t")
   # plt = Plots.plot([1:switch_attempts;], ΔF)
   # Plots.savefig(string(potential_name, "_ΔF.png"))
-  return ΔF
+  return convert(Array{Float64, 1}, ΔF)
 end
 
 function exact_sol(potential_name, kT)
